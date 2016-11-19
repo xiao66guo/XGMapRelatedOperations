@@ -50,10 +50,7 @@
     
     // 添加大头针模型(遵守MKAnnotation协议对象)
     [self.map addAnnotation:annotation];
-    
-    
-    
-    
+   
 }
 
 #pragma mark - 设置地图的放大和缩小
@@ -210,17 +207,43 @@
     
     // 实现重用
     static NSString *ID = @"annotation";
-    MKPinAnnotationView *anV = (MKPinAnnotationView *)[self.map dequeueReusableAnnotationViewWithIdentifier:ID];
+    MKAnnotationView *anV = [self.map dequeueReusableAnnotationViewWithIdentifier:ID];
     if (nil == anV) {
-        anV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:ID];
-        
+        anV = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:ID];
         // 设置大头针的颜色(必须使用子类MKPinAnnotationView)
-        anV.pinTintColor = [UIColor greenColor];
+//        anV.pinTintColor = [UIColor greenColor];
+        // 设置头像(MKPinAnnotationView不能设置自定义的图片和滑落的动画)
+        anV.image = [UIImage imageNamed:@"pic"];
         // 设置标注
         anV.canShowCallout = YES;
         // 设置滑落的动画
-        anV.animatesDrop = YES;
+//        anV.animatesDrop = YES;
+        // 设置其他的视图
+        anV.leftCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        anV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeInfoDark];
+        anV .detailCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeContactAdd];
     }
     return anV;
 }
+#pragma mark - 当已经添加大头针视图后调用(还没有显示在地图上)该方法可以用来设置自定义动画
+// 参数1：地图   参数2：大头针视图对应的模型数组   返回重用的大头针视图
+-(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray<MKAnnotationView *> *)views{
+    
+    // 遍历所有的大头针视图
+    for (MKAnnotationView *anv in views) {
+        // 排除定位的大头针
+        if ([anv.annotation isKindOfClass:[MKUserLocation class]]) {
+            return;
+        }
+        // 记录目标的位置
+        CGRect targetRect = anv.frame;
+        // 修改位置
+        anv.frame = CGRectMake(targetRect.origin.x, 0, targetRect.size.width, targetRect.size.height);
+        // 以动画的形式将大头针视图改回原来的目标位置
+        [UIView animateWithDuration:0.3 animations:^{
+            anv.frame = targetRect;
+        }];
+    }
+}
+
 @end

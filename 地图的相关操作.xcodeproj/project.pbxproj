@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DB0D208F1DE0AA860078AACA /* XGAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0D208E1DE0AA860078AACA /* XGAnnotation.m */; };
+		DB0D20951DE0BC5E0078AACA /* pic.png in Resources */ = {isa = PBXBuildFile; fileRef = DB0D20941DE0BC5E0078AACA /* pic.png */; };
 		DB8C25CE1DE064E600AAC0D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25CD1DE064E600AAC0D2 /* main.m */; };
 		DB8C25D11DE064E600AAC0D2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25D01DE064E600AAC0D2 /* AppDelegate.m */; };
 		DB8C25D91DE064E600AAC0D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB8C25D81DE064E600AAC0D2 /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		DB0D208D1DE0AA860078AACA /* XGAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XGAnnotation.h; sourceTree = "<group>"; };
 		DB0D208E1DE0AA860078AACA /* XGAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGAnnotation.m; sourceTree = "<group>"; };
+		DB0D20941DE0BC5E0078AACA /* pic.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pic.png; sourceTree = "<group>"; };
 		DB8C25C91DE064E600AAC0D2 /* 地图的相关操作.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "地图的相关操作.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB8C25CD1DE064E600AAC0D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DB8C25CF1DE064E600AAC0D2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				DB0D208D1DE0AA860078AACA /* XGAnnotation.h */,
 				DB0D208E1DE0AA860078AACA /* XGAnnotation.m */,
 				DB8C25D81DE064E600AAC0D2 /* Assets.xcassets */,
+				DB0D20941DE0BC5E0078AACA /* pic.png */,
 				DB8C25DA1DE064E600AAC0D2 /* LaunchScreen.storyboard */,
 				DB8C25DD1DE064E600AAC0D2 /* Info.plist */,
 				DB8C25CC1DE064E600AAC0D2 /* Supporting Files */,
@@ -143,6 +146,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB0D20951DE0BC5E0078AACA /* pic.png in Resources */,
 				DB8C25DC1DE064E600AAC0D2 /* LaunchScreen.storyboard in Resources */,
 				DB8C25D91DE064E600AAC0D2 /* Assets.xcassets in Resources */,
 			);
