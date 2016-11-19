@@ -19,19 +19,49 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-  
+    // 添加地图
     [self addMapView];
-    
+    // 设置地图的模式
     [self addMapViewMode];
-    
+    // 设置返回按钮
+    [self addBackBtn];
 }
+
+#pragma mark - 设置返回按钮
+-(void)addBackBtn{
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, self.view.bounds.size.height- 50, 50, 30)];
+    backBtn.backgroundColor = [UIColor greenColor];
+    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
+    [backBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.view addSubview:backBtn];
+    [backBtn addTarget:self action:@selector(clickBackBtn) forControlEvents:UIControlEventTouchUpInside];
+
+}
+#pragma mark - 返回按钮的响应事件
+-(void)clickBackBtn{
+    // 没有动画的返回方式
+//    self.map.userTrackingMode = MKUserTrackingModeFollow;
+    // 有动画的返回用户的跟踪方式1：
+//    [self.map setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+    // 通过地图范围返回用户的跟踪方式2：中心点 = 定位点
+  /*  typedef struct {
+        CLLocationCoordinate2D center;  // 中心点   表示地图的位置
+        MKCoordinateSpan span;          // 经纬度的跨度  1° = 111KM   表示地图的尺寸
+         } MKCoordinateRegion;*/  // 地图范围
+    // 设置定位点
+    CLLocationCoordinate2D coordinate = self.map.userLocation.location.coordinate;
+    // 设置跨度 = 当前地图的跨度
+    MKCoordinateSpan spn = self.map.region.span;
+    [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
+}
+
 
 #pragma mark - 添加地图的模式
 -(void)addMapViewMode{
     NSArray *array = @[@"标准",@"卫星",@"混合",@"地图卫星立交桥",@"混合立交桥"];
     UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:array];
     segment.frame = CGRectMake(20, 84, 300, 20);
-    segment.selectedSegmentIndex = 1;
+    segment.selectedSegmentIndex = 0;
     [segment addTarget:self action:@selector(clickMapViewModel:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:segment];
 }
