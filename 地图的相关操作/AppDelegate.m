@@ -21,7 +21,7 @@
     XGViewController *vc = [[XGViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     vc.view.backgroundColor = [UIColor magentaColor];
-    vc.title = @"地图的先关操作";
+    vc.title = @"地图的相关操作";
     _window.rootViewController = nav;
     [_window makeKeyAndVisible];
     

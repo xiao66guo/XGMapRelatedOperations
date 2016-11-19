@@ -12,6 +12,7 @@
 		DB8C25D91DE064E600AAC0D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB8C25D81DE064E600AAC0D2 /* Assets.xcassets */; };
 		DB8C25DC1DE064E600AAC0D2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB8C25DA1DE064E600AAC0D2 /* LaunchScreen.storyboard */; };
 		DB8C25E51DE0659B00AAC0D2 /* XGViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25E41DE0659A00AAC0D2 /* XGViewController.m */; };
+		DB8C25E71DE0685100AAC0D2 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8C25E61DE0685100AAC0D2 /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		DB8C25DD1DE064E600AAC0D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DB8C25E31DE0659A00AAC0D2 /* XGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XGViewController.h; sourceTree = "<group>"; };
 		DB8C25E41DE0659A00AAC0D2 /* XGViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGViewController.m; sourceTree = "<group>"; };
+		DB8C25E61DE0685100AAC0D2 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB8C25E71DE0685100AAC0D2 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +43,7 @@
 		DB8C25C01DE064E600AAC0D2 = {
 			isa = PBXGroup;
 			children = (
+				DB8C25E61DE0685100AAC0D2 /* MapKit.framework */,
 				DB8C25CB1DE064E600AAC0D2 /* 地图的相关操作 */,
 				DB8C25CA1DE064E600AAC0D2 /* Products */,
 			);
