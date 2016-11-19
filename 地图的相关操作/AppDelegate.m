@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "XGViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -16,7 +16,16 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+
+    _window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    XGViewController *vc = [[XGViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    vc.view.backgroundColor = [UIColor magentaColor];
+    vc.title = @"地图的先关操作";
+    _window.rootViewController = nav;
+    [_window makeKeyAndVisible];
+    
+    
     return YES;
 }
 

@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  XGViewController.h
 //  地图的相关操作
 //
 //  Created by 小果 on 2016/11/19.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface XGViewController : UIViewController
 
 @end
-
