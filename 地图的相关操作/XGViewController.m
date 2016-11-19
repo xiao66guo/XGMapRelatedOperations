@@ -8,7 +8,7 @@
 
 #import "XGViewController.h"
 #import <MapKit/MapKit.h>
-
+#import "XGAnnotation.h"
 @interface XGViewController ()<MKMapViewDelegate>
 @property (nonatomic, weak) MKMapView *map;
 @property (nonatomic, strong) CLLocationManager *manager;
@@ -30,6 +30,28 @@
     [self addMapScale];
     
 }
+
+#pragma mark - 添加大头针
+// 大头针视图是有系统来添加的，但是大头针的数据是需要由开发者通过大头针模型来设置的
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    // 添加大图针的模型
+    // 创建自定义的大头针模型的对象
+    XGAnnotation *annotation = [[XGAnnotation alloc] init];
+    // 设置属性
+    // 获取点击事件的坐标
+    UITouch *touch = touches.anyObject;
+    CGPoint point = [touch locationInView:self.map];
+    // 进行坐标转换
+    CLLocationCoordinate2D coor = [self.map convertPoint:point toCoordinateFromView:self.map];
+    // 获取坐标
+    annotation.coordinate = coor;
+    annotation.title =@"xiao66guo";
+    annotation.subtitle = @"😋呵呵呵呵呵";
+    
+    // 添加大头针模型(遵守MKAnnotation协议对象)
+    [self.map addAnnotation:annotation];
+}
+
 #pragma mark - 设置地图的放大和缩小
 -(void)addMapScale{
     UIButton *zoomin = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, self.view.bounds.size.height- 70, 50, 25)];
@@ -59,19 +81,6 @@
     [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
 
 }
--(void)clickZoomout{
-    
-    // 设置范围 - 进行缩放
-    // 中心点 = 当前地图的中心点
-//    CLLocationCoordinate2D coordinate = self.map.region.center;
-//    // 跨度 = 当前地图的跨度 * 比例的系数
-//    MKCoordinateSpan spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 0.5, self.map.region.span.longitudeDelta * 0.5);
-//    //
-//    CLLocationCoordinate2D coordinate = self.map.region.center;
-//    MKCoordinateSpan spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 2, self.map.region.span.longitudeDelta * 2);
-//    [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
-}
-
 
 #pragma mark - 设置返回按钮
 -(void)addBackBtn{
@@ -82,7 +91,6 @@
     [self.view addSubview:backBtn];
     self.backBtn = backBtn;
     [backBtn addTarget:self action:@selector(clickBackBtn) forControlEvents:UIControlEventTouchUpInside];
-
 }
 #pragma mark - 返回按钮的响应事件
 -(void)clickBackBtn{
@@ -101,7 +109,6 @@
     MKCoordinateSpan spn = self.map.region.span;
     [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
 }
-
 
 #pragma mark - 添加地图的模式
 -(void)addMapViewMode{
@@ -141,7 +148,6 @@
     [self.view addSubview:map];
     self.map = map;
     
-    
     // 在地图上显示定位
     // 1、请求授权(在Info.plist中添加NSLocationWhenInUseUsageDescription）
     self.manager = [[CLLocationManager alloc] init];
@@ -166,9 +172,7 @@
     // 显示建筑物的3D模型，设置3D/沙盘/航拍模式(高德地图不支持)
     self.map.showsBuildings = YES;
     // 设置航拍模式
-    self.map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
-    
-    
+//    self.map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
 }
 #pragma mark - MKMapViewDelegate
 // userLocation：定位大头针模型

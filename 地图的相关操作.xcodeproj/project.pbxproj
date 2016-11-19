@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB0D208F1DE0AA860078AACA /* XGAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0D208E1DE0AA860078AACA /* XGAnnotation.m */; };
 		DB8C25CE1DE064E600AAC0D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25CD1DE064E600AAC0D2 /* main.m */; };
 		DB8C25D11DE064E600AAC0D2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25D01DE064E600AAC0D2 /* AppDelegate.m */; };
 		DB8C25D91DE064E600AAC0D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB8C25D81DE064E600AAC0D2 /* Assets.xcassets */; };
@@ -16,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB0D208D1DE0AA860078AACA /* XGAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XGAnnotation.h; sourceTree = "<group>"; };
+		DB0D208E1DE0AA860078AACA /* XGAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGAnnotation.m; sourceTree = "<group>"; };
 		DB8C25C91DE064E600AAC0D2 /* 地图的相关操作.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "地图的相关操作.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB8C25CD1DE064E600AAC0D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DB8C25CF1DE064E600AAC0D2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -64,6 +67,8 @@
 				DB8C25D01DE064E600AAC0D2 /* AppDelegate.m */,
 				DB8C25E31DE0659A00AAC0D2 /* XGViewController.h */,
 				DB8C25E41DE0659A00AAC0D2 /* XGViewController.m */,
+				DB0D208D1DE0AA860078AACA /* XGAnnotation.h */,
+				DB0D208E1DE0AA860078AACA /* XGAnnotation.m */,
 				DB8C25D81DE064E600AAC0D2 /* Assets.xcassets */,
 				DB8C25DA1DE064E600AAC0D2 /* LaunchScreen.storyboard */,
 				DB8C25DD1DE064E600AAC0D2 /* Info.plist */,
@@ -153,6 +158,7 @@
 				DB8C25D11DE064E600AAC0D2 /* AppDelegate.m in Sources */,
 				DB8C25CE1DE064E600AAC0D2 /* main.m in Sources */,
 				DB8C25E51DE0659B00AAC0D2 /* XGViewController.m in Sources */,
+				DB0D208F1DE0AA860078AACA /* XGAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +299,7 @@
 				DB8C25E21DE064E600AAC0D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
