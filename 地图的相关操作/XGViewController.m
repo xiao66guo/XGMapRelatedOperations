@@ -50,6 +50,10 @@
     
     // 添加大头针模型(遵守MKAnnotation协议对象)
     [self.map addAnnotation:annotation];
+    
+    
+    
+    
 }
 
 #pragma mark - 设置地图的放大和缩小
@@ -156,6 +160,8 @@
     // 2.设置地图的用户跟踪模式
     map.userTrackingMode = MKUserTrackingModeFollow;
     // 3、设置代理 通过代理来监听地图已经更新用户位置后获取地理信息
+    // 不在界面上显示的大头针视图，如果过多的话会导致内存紧张，系统基于此也实现了大头针视图的重用机制
+    // 设置代理来实现大头针的重用
     map.delegate = self;
     
     // 其他的新属性
@@ -193,5 +199,28 @@
 
     }];
 }
-
+#pragma mark - 大头针的重用
+// 返回可重用的大头针视图 参数1：地图    参数2：大头针视图对应的模型
+-(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
+    // 排除已经定位的大头针
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        // 返回空，则不会进行重用，会按照默认的样式进行展示
+        return nil;
+    }
+    
+    // 实现重用
+    static NSString *ID = @"annotation";
+    MKPinAnnotationView *anV = (MKPinAnnotationView *)[self.map dequeueReusableAnnotationViewWithIdentifier:ID];
+    if (nil == anV) {
+        anV = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:ID];
+        
+        // 设置大头针的颜色(必须使用子类MKPinAnnotationView)
+        anV.pinTintColor = [UIColor greenColor];
+        // 设置标注
+        anV.canShowCallout = YES;
+        // 设置滑落的动画
+        anV.animatesDrop = YES;
+    }
+    return anV;
+}
 @end
