@@ -9,6 +9,7 @@
 #import "XGViewController.h"
 #import <MapKit/MapKit.h>
 #import "XGAnnotation.h"
+#import "XGAnnotationView.h"
 @interface XGViewController ()<MKMapViewDelegate>
 @property (nonatomic, weak) MKMapView *map;
 @property (nonatomic, strong) CLLocationManager *manager;
@@ -204,26 +205,8 @@
         // 返回空，则不会进行重用，会按照默认的样式进行展示
         return nil;
     }
-    
-    // 实现重用
-    static NSString *ID = @"annotation";
-    MKAnnotationView *anV = [self.map dequeueReusableAnnotationViewWithIdentifier:ID];
-    if (nil == anV) {
-        anV = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:ID];
-        // 设置大头针的颜色(必须使用子类MKPinAnnotationView)
-//        anV.pinTintColor = [UIColor greenColor];
-        // 设置头像(MKPinAnnotationView不能设置自定义的图片和滑落的动画)
-        anV.image = [UIImage imageNamed:@"pic"];
-        // 设置标注
-        anV.canShowCallout = YES;
-        // 设置滑落的动画
-//        anV.animatesDrop = YES;
-        // 设置其他的视图
-        anV.leftCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeInfoLight];
-        anV.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeInfoDark];
-        anV .detailCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    }
-    return anV;
+    XGAnnotationView *anV = [XGAnnotationView annotationWithMapView:self.map];
+        return anV;
 }
 #pragma mark - 当已经添加大头针视图后调用(还没有显示在地图上)该方法可以用来设置自定义动画
 // 参数1：地图   参数2：大头针视图对应的模型数组   返回重用的大头针视图
