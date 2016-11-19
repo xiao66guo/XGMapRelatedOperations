@@ -13,6 +13,7 @@
 @property (nonatomic, weak) MKMapView *map;
 @property (nonatomic, strong) CLLocationManager *manager;
 @property (nonatomic, weak) UISegmentedControl *segment;
+@property (nonatomic, weak) UIButton *backBtn;
 @end
 
 @implementation XGViewController
@@ -25,7 +26,52 @@
     [self addMapViewMode];
     // 设置返回按钮
     [self addBackBtn];
+    // 设置地图的缩放模式
+    [self addMapScale];
+    
 }
+#pragma mark - 设置地图的放大和缩小
+-(void)addMapScale{
+    UIButton *zoomin = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, self.view.bounds.size.height- 70, 50, 25)];
+    zoomin.backgroundColor = [UIColor greenColor];
+    [zoomin setTitle:@"放大" forState:UIControlStateNormal];
+    [zoomin setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.view addSubview:zoomin];
+    [zoomin addTarget:self action:@selector(clickZoom:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton *zoomout = [[UIButton alloc] initWithFrame:CGRectMake(zoomin.frame.origin.x, zoomin.frame.origin.y + 30, 50, 25)];
+    zoomout.backgroundColor = [UIColor greenColor];
+    [zoomout setTitle:@"缩小" forState:UIControlStateNormal];
+    [zoomout setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.view addSubview:zoomout];
+    [zoomout addTarget:self action:@selector(clickZoom:) forControlEvents:UIControlEventTouchUpInside];
+    
+}
+#pragma mark - 地图的缩放
+-(void)clickZoom:(UIButton *)sender{
+    CLLocationCoordinate2D coordinate = self.map.region.center;
+    MKCoordinateSpan spn;
+    if ([sender.titleLabel.text isEqualToString:@"放大"]) {
+        spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 0.5, self.map.region.span.longitudeDelta * 0.5);
+    }else{
+        spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 2, self.map.region.span.longitudeDelta * 2);
+    }
+    [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
+
+}
+-(void)clickZoomout{
+    
+    // 设置范围 - 进行缩放
+    // 中心点 = 当前地图的中心点
+//    CLLocationCoordinate2D coordinate = self.map.region.center;
+//    // 跨度 = 当前地图的跨度 * 比例的系数
+//    MKCoordinateSpan spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 0.5, self.map.region.span.longitudeDelta * 0.5);
+//    //
+//    CLLocationCoordinate2D coordinate = self.map.region.center;
+//    MKCoordinateSpan spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 2, self.map.region.span.longitudeDelta * 2);
+//    [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
+}
+
 
 #pragma mark - 设置返回按钮
 -(void)addBackBtn{
@@ -34,6 +80,7 @@
     [backBtn setTitle:@"返回" forState:UIControlStateNormal];
     [backBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.view addSubview:backBtn];
+    self.backBtn = backBtn;
     [backBtn addTarget:self action:@selector(clickBackBtn) forControlEvents:UIControlEventTouchUpInside];
 
 }
@@ -60,12 +107,11 @@
 -(void)addMapViewMode{
     NSArray *array = @[@"标准",@"卫星",@"混合",@"地图卫星立交桥",@"混合立交桥"];
     UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:array];
-    segment.frame = CGRectMake(20, 84, 300, 20);
+    segment.frame = CGRectMake(10, 100, 300, 20);
     segment.selectedSegmentIndex = 0;
     [segment addTarget:self action:@selector(clickMapViewModel:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:segment];
 }
-
 #pragma mark - 地图模式响应事件
 -(void)clickMapViewModel:(UISegmentedControl *)sender{
     switch (sender.selectedSegmentIndex) {
@@ -94,7 +140,7 @@
     MKMapView *map = [[MKMapView alloc] initWithFrame:CGRectMake(0, 64, self.view.bounds.size.width, self.view.bounds.size.height - 64)];
     [self.view addSubview:map];
     self.map = map;
-    self.map.showsUserLocation = YES;
+    
     
     // 在地图上显示定位
     // 1、请求授权(在Info.plist中添加NSLocationWhenInUseUsageDescription）
@@ -106,8 +152,24 @@
     // 3、设置代理 通过代理来监听地图已经更新用户位置后获取地理信息
     map.delegate = self;
     
+    // 其他的新属性
+    // 显示指南针
+    self.map.showsCompass = YES;
+    // 显示感兴趣的点，默认是显示的
+    self.map.showsPointsOfInterest = NO;
+    // 显示标尺(单位：mi 英尺)
+    self.map.showsScale = YES;
+    // 显示交通情况
+    self.map.showsTraffic = YES;
+    // 显示定位大头针，默认是显示的
+    self.map.showsUserLocation = YES;
+    // 显示建筑物的3D模型，设置3D/沙盘/航拍模式(高德地图不支持)
+    self.map.showsBuildings = YES;
+    // 设置航拍模式
+    self.map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
+    
+    
 }
-
 #pragma mark - MKMapViewDelegate
 // userLocation：定位大头针模型
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
