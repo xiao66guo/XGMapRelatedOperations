@@ -10,16 +10,23 @@
 #import <MapKit/MapKit.h>
 #import "XGAnnotation.h"
 #import "XGAnnotationView.h"
-@interface XGViewController ()<MKMapViewDelegate>
+#import "iflyMSC/IFlyRecognizerViewDelegate.h"
+#import "iflyMSC/IFlyRecognizerView.h"
+#import "iflyMSC/IFlyMSC.h"
+#import "ISRDataHelper.h"
+@interface XGViewController ()<MKMapViewDelegate,IFlyRecognizerViewDelegate,UITextFieldDelegate>
+@property (nonatomic, strong) NSString *result;
 @end
 @implementation XGViewController
 {
-    MKMapView              *_map;
-    CLLocationManager  *_manager;
-    UISegmentedControl *_segment;
-    UITextField   *_addressField;
-    UIButton           *_backBtn;
-    UIButton         *_aerialBtn;
+    MKMapView                      *_map;
+    CLLocationManager              *_manager;
+    UISegmentedControl             *_segment;
+    UITextField               *_addressField;
+    UIButton                       *_backBtn;
+    UIButton                     *_aerialBtn;
+    UIButton                        *_navBtn;
+    IFlyRecognizerView  *_iflyRecognizerView;
 }
 
 - (void)viewDidLoad {
@@ -37,7 +44,77 @@
     // 绘制线路图
     [self addDrawControl];
     
+    //初始化语音识别控件
+    _iflyRecognizerView = [[IFlyRecognizerView alloc] initWithCenter:self.view.center];
+    _iflyRecognizerView.delegate = self;
+    [_iflyRecognizerView setParameter: @"iat" forKey: [IFlySpeechConstant IFLY_DOMAIN]];
+    //asr_audio_path保存录音文件名，如不再需要，设置value为nil表示取消，默认目录是documents
+    [_iflyRecognizerView setParameter:@"asrview.pcm " forKey:[IFlySpeechConstant ASR_AUDIO_PATH]];
+    // 添加语音按钮
+    [self addVoiceBtn];
+    
 }
+-(void)viewWillAppear:(BOOL)animated{
+    NSString *initString = [[NSString alloc] initWithFormat:@"appid=%@",@"58315ff7"];
+    [IFlySpeechUtility createUtility:initString];
+}
+
+#pragma mark - 添加语音按钮
+-(void)addVoiceBtn{
+    UIButton *voiceBtn = [[UIButton alloc] init];
+    [voiceBtn setImage:[UIImage imageNamed:@"chat_bottom_voice_nor"] forState:UIControlStateNormal];
+    [voiceBtn setImage:[UIImage imageNamed:@"chat_bottom_voice_press"] forState:UIControlStateHighlighted];
+    voiceBtn.frame = CGRectMake(CGRectGetMaxX(_navBtn.frame)+5, _navBtn.frame.origin.y - 5, 34, 34);
+    [voiceBtn addTarget:self action:@selector(clickVoiceBtn) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:voiceBtn];
+}
+#pragma mark - 语音响应
+-(void)clickVoiceBtn{
+    if (_addressField.text.length != 0) {
+        _addressField.text = nil;
+    }
+    //启动识别服务
+    [_iflyRecognizerView start];
+}
+/*识别结果返回代理
+ @param resultArray 识别结果
+ @ param isLast 表示是否最后一次结果
+ */
+- (void)onResult: (NSArray *)resultArray isLast:(BOOL) isLast
+{
+    [_iflyRecognizerView cancel]; //取消识别
+    
+    NSMutableString *resultString = [[NSMutableString alloc] init];
+    NSDictionary *dic = resultArray[0];
+    for (NSString *key in dic) {
+        [resultString appendFormat:@"%@",key];
+    }
+    
+    _result =[NSString stringWithFormat:@"%@%@", _addressField.text,resultString];
+    
+    NSString * resultFromJson =  [ISRDataHelper stringFromJson:resultString];
+//    NSLog(@"%@",resultFromJson);
+    
+    _addressField.text = [NSString stringWithFormat:@"%@%@", _addressField.text,resultFromJson];
+    
+    if (isLast){
+//        NSLog(@"听写结果(json)：%@测试",  self.result);
+    }
+}
+/*识别会话错误返回代理
+ @ param  error 错误码
+ */
+- (void)onError: (IFlySpeechError *) error
+{
+    
+//    NSLog(@"-------%@",error);
+}
+- (void) onVolumeChanged: (int)volume
+{
+//    NSLog(@"%d",volume);
+    
+}
+
 
 #pragma mark - 添加绘制控件
 -(void)addDrawControl{
@@ -53,7 +130,9 @@
     addressField.textAlignment = NSTextAlignmentLeft;
     addressField.borderStyle = UITextBorderStyleBezel;
     addressField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    addressField.frame = CGRectMake(CGRectGetMaxX(lab.frame), CGRectGetMaxY(_segment.frame)+2, 150, 30);
+    addressField.returnKeyType = UIReturnKeyDone;
+    addressField.delegate = self;
+    addressField.frame = CGRectMake(CGRectGetMaxX(lab.frame), CGRectGetMaxY(_segment.frame)+2, 120, 30);
     [self.view addSubview:addressField];
     _addressField = addressField;
     
@@ -63,12 +142,20 @@
     [navBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.view addSubview:navBtn];
     [navBtn addTarget:self action:@selector(startNav) forControlEvents:UIControlEventTouchUpInside];
+    _navBtn = navBtn;
 }
+#pragma mark - 结束编辑
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    
+    [_addressField endEditing:YES];
+    return YES;
+}
+
 #pragma mark - 开始导航按钮
 -(void)startNav{
     [_addressField resignFirstResponder];
     
-    // 方式2：使用自定义地图进行导航  将起点和终点发送给服务器,由服务器返回导航结果
+    // 使用自定义地图进行导航  将起点和终点发送给服务器,由服务器返回导航结果
     // 1、创建导航请求对象
     MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
     // 2、设置起点和终点
@@ -92,10 +179,10 @@
             for (MKRoute *route in response.routes) {
                 //MKRoute 路线对象
                 //                //取出路线中每一步操作
-                for (MKRouteStep *step in route.steps) {
+//                for (MKRouteStep *step in route.steps) {
                     //取出每一步的具体内容
 //                    NSLog(@"%@", step.instructions);
-                }
+//                }
                 // 地图画线  折线属于地图覆盖物的一种
                 // 添加地图覆盖物  所以遵守MKOverlay协议的对象都可以作为覆盖物添加到地图上
                 [_map addOverlay:route.polyline];
