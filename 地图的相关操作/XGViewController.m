@@ -11,14 +11,16 @@
 #import "XGAnnotation.h"
 #import "XGAnnotationView.h"
 @interface XGViewController ()<MKMapViewDelegate>
-@property (nonatomic, weak) MKMapView *map;
-@property (nonatomic, strong) CLLocationManager *manager;
-@property (nonatomic, weak) UISegmentedControl *segment;
-@property (nonatomic, weak) UIButton *backBtn;
-@property (nonatomic, weak) UIButton *aerialBtn;
 @end
-
 @implementation XGViewController
+{
+    MKMapView              *_map;
+    CLLocationManager  *_manager;
+    UISegmentedControl *_segment;
+    UITextField   *_addressField;
+    UIButton           *_backBtn;
+    UIButton         *_aerialBtn;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,51 +34,136 @@
     [self addAerialBtn];
     // 设置地图的缩放模式
     [self addMapScale];
+    // 绘制线路图
+    [self addDrawControl];
     
 }
+
+#pragma mark - 添加绘制控件
+-(void)addDrawControl{
+    UILabel *lab = [[UILabel alloc] init];
+    lab.font = [UIFont systemFontOfSize:15];
+    lab.text = @"请输入地址:";
+    lab.textColor = [UIColor redColor];
+    lab.frame = CGRectMake(10, CGRectGetMaxY(_segment.frame)+5, 90, 25);
+    [self.view addSubview:lab];
+    
+    UITextField *addressField = [[UITextField alloc] init];
+    addressField.backgroundColor = [UIColor magentaColor];
+    addressField.textAlignment = NSTextAlignmentLeft;
+    addressField.borderStyle = UITextBorderStyleBezel;
+    addressField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    addressField.frame = CGRectMake(CGRectGetMaxX(lab.frame), CGRectGetMaxY(_segment.frame)+2, 150, 30);
+    [self.view addSubview:addressField];
+    _addressField = addressField;
+    
+    UIButton *navBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(addressField.frame) + 10,lab.frame.origin.y, 50, 25)];
+    navBtn.backgroundColor = [UIColor greenColor];
+    [navBtn setTitle:@"导航" forState:UIControlStateNormal];
+    [navBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.view addSubview:navBtn];
+    [navBtn addTarget:self action:@selector(startNav) forControlEvents:UIControlEventTouchUpInside];
+}
+#pragma mark - 开始导航按钮
+-(void)startNav{
+    [_addressField resignFirstResponder];
+    
+    // 方式2：使用自定义地图进行导航  将起点和终点发送给服务器,由服务器返回导航结果
+    // 1、创建导航请求对象
+    MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+    // 2、设置起点和终点
+    request.source = [MKMapItem mapItemForCurrentLocation];
+    // //终点  通过地理编码(人文->地理)获取地标对象,然后生成地图项目
+    //进行地理编码
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    [geocoder geocodeAddressString:_addressField.text completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        
+        if (placemarks.count == 0 || error) {
+            return ;
+        }
+        CLPlacemark *clPm = placemarks.lastObject;
+        MKPlacemark *pm = [[MKPlacemark alloc] initWithPlacemark:clPm];
+        request.destination = [[MKMapItem alloc] initWithPlacemark:pm];
+        //3.创建导航对象
+        MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
+        //4.计算导航路线 传递数据给服务器
+        [direction calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+            //取出结果中的路线对象
+            for (MKRoute *route in response.routes) {
+                //MKRoute 路线对象
+                //                //取出路线中每一步操作
+                for (MKRouteStep *step in route.steps) {
+                    //取出每一步的具体内容
+//                    NSLog(@"%@", step.instructions);
+                }
+                // 地图画线  折线属于地图覆盖物的一种
+                // 添加地图覆盖物  所以遵守MKOverlay协议的对象都可以作为覆盖物添加到地图上
+                [_map addOverlay:route.polyline];
+            }
+            
+        }];
+        
+    }];
+    
+}
+#pragma mark - MKMapViewDelegate
+// 当设置地图覆盖物的样式时调用   参数1：地图视图    参数2：添加到的覆盖物    返回覆盖物的样式
+-(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
+    // 创建覆盖物的样式
+    // 设置折线的样式，必须使用MKOverlayRenderer的折线子类
+    MKPolylineRenderer *render = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+    // 设置属性
+    render.lineWidth = 3;
+    render.strokeColor = [UIColor purpleColor];
+    
+    return render;
+}
+
+
 #pragma mark - 添加航拍按钮
 -(void)addAerialBtn{
-    UIButton *aerialBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.backBtn.frame.origin.x, self.backBtn.frame.origin.y - 30, 50, 25)];
+    UIButton *aerialBtn = [[UIButton alloc] initWithFrame:CGRectMake(_backBtn.frame.origin.x, _backBtn.frame.origin.y - 30, 50, 25)];
     aerialBtn.backgroundColor = [UIColor greenColor];
     [aerialBtn setTitle:@"航拍" forState:UIControlStateNormal];
     [aerialBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [self.view addSubview:aerialBtn];
-    self.aerialBtn = aerialBtn;
     [aerialBtn addTarget:self action:@selector(addAerialModel) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:aerialBtn];
+    _aerialBtn = aerialBtn;
 }
 
 #pragma mark - 设置地图的航拍模式
 -(void)addAerialModel{
     // 设置航拍模式
-    self.map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
-    self.map.userTrackingMode = MKUserTrackingModeFollow;
+    _map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
+    _map.userTrackingMode = MKUserTrackingModeFollow;
 }
 
 #pragma mark - 添加大头针
 // 大头针视图是有系统来添加的，但是大头针的数据是需要由开发者通过大头针模型来设置的
--(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    // 添加大图针的模型
-    // 创建自定义的大头针模型的对象
-    XGAnnotation *annotation = [[XGAnnotation alloc] init];
-    // 设置属性
-    // 获取点击事件的坐标
-    UITouch *touch = touches.anyObject;
-    CGPoint point = [touch locationInView:self.map];
-    // 进行坐标转换
-    CLLocationCoordinate2D coor = [self.map convertPoint:point toCoordinateFromView:self.map];
-    // 获取坐标
-    annotation.coordinate = coor;
-    annotation.title = @"xiao66guo";
-    annotation.subtitle = @"😋呵呵呵呵呵";
-    
-    // 添加大头针模型(遵守MKAnnotation协议对象)
-    [self.map addAnnotation:annotation];
-   
-}
+//-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+//    // 添加大图针的模型
+//    // 创建自定义的大头针模型的对象
+//    XGAnnotation *annotation = [[XGAnnotation alloc] init];
+//    self.annotation = annotation;
+//    // 设置属性
+//    // 获取点击事件的坐标
+//    UITouch *touch = touches.anyObject;
+//    CGPoint point = [touch locationInView:_map];
+//    // 进行坐标转换
+//    CLLocationCoordinate2D coor = [_map convertPoint:point toCoordinateFromView:_map];
+//    // 获取坐标
+//    annotation.coordinate = coor;
+//    annotation.title = @"xiao66guo";
+//    annotation.subtitle = @"😋呵呵呵呵呵";
+//    
+//    // 添加大头针模型(遵守MKAnnotation协议对象)
+//    [_map addAnnotation:annotation];
+//   
+//}
 
 #pragma mark - 设置地图的放大和缩小
 -(void)addMapScale{
-    UIButton *zoomin = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, self.aerialBtn.frame.origin.y, 50, 25)];
+    UIButton *zoomin = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, _aerialBtn.frame.origin.y, 50, 25)];
     zoomin.backgroundColor = [UIColor greenColor];
     [zoomin setTitle:@"放大" forState:UIControlStateNormal];
     [zoomin setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -93,14 +180,14 @@
 }
 #pragma mark - 地图的缩放
 -(void)clickZoom:(UIButton *)sender{
-    CLLocationCoordinate2D coordinate = self.map.region.center;
+    CLLocationCoordinate2D coordinate = _map.region.center;
     MKCoordinateSpan spn;
     if ([sender.titleLabel.text isEqualToString:@"放大"]) {
-        spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 0.5, self.map.region.span.longitudeDelta * 0.5);
+        spn = MKCoordinateSpanMake(_map.region.span.latitudeDelta * 0.5, _map.region.span.longitudeDelta * 0.5);
     }else{
-        spn = MKCoordinateSpanMake(self.map.region.span.latitudeDelta * 2, self.map.region.span.longitudeDelta * 2);
+        spn = MKCoordinateSpanMake(_map.region.span.latitudeDelta * 2, _map.region.span.longitudeDelta * 2);
     }
-    [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
+    [_map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
 
 }
 
@@ -110,26 +197,26 @@
     backBtn.backgroundColor = [UIColor greenColor];
     [backBtn setTitle:@"返回" forState:UIControlStateNormal];
     [backBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [self.view addSubview:backBtn];
-    self.backBtn = backBtn;
     [backBtn addTarget:self action:@selector(clickBackBtn) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:backBtn];
+    _backBtn = backBtn;
 }
 #pragma mark - 返回按钮的响应事件
 -(void)clickBackBtn{
     // 没有动画的返回方式
-//    self.map.userTrackingMode = MKUserTrackingModeFollow;
+//    _map.userTrackingMode = MKUserTrackingModeFollow;
     // 有动画的返回用户的跟踪方式1：
-//    [self.map setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
+//    [_map setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
     // 通过地图范围返回用户的跟踪方式2：中心点 = 定位点
   /*  typedef struct {
         CLLocationCoordinate2D center;  // 中心点   表示地图的位置
         MKCoordinateSpan span;          // 经纬度的跨度  1° = 111KM   表示地图的尺寸
          } MKCoordinateRegion;*/  // 地图范围
     // 设置定位点
-    CLLocationCoordinate2D coordinate = self.map.userLocation.location.coordinate;
+    CLLocationCoordinate2D coordinate = _map.userLocation.location.coordinate;
     // 设置跨度 = 当前地图的跨度
-    MKCoordinateSpan spn = self.map.region.span;
-    [self.map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
+    MKCoordinateSpan spn = _map.region.span;
+    [_map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
 }
 
 #pragma mark - 添加地图的模式
@@ -140,24 +227,25 @@
     segment.selectedSegmentIndex = 0;
     [segment addTarget:self action:@selector(clickMapViewModel:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:segment];
+    _segment = segment;
 }
 #pragma mark - 地图模式响应事件
 -(void)clickMapViewModel:(UISegmentedControl *)sender{
     switch (sender.selectedSegmentIndex) {
         case MKMapTypeStandard:
-            self.map.mapType = MKMapTypeStandard;
+            _map.mapType = MKMapTypeStandard;
             break;
         case MKMapTypeSatellite:
-            self.map.mapType = MKMapTypeSatellite;
+            _map.mapType = MKMapTypeSatellite;
             break;
         case MKMapTypeHybrid:
-            self.map.mapType = MKMapTypeHybrid;
+            _map.mapType = MKMapTypeHybrid;
             break;
         case MKMapTypeSatelliteFlyover:
-            self.map.mapType = MKMapTypeSatelliteFlyover;
+            _map.mapType = MKMapTypeSatelliteFlyover;
             break;
         case MKMapTypeHybridFlyover:
-            self.map.mapType = MKMapTypeHybridFlyover;
+            _map.mapType = MKMapTypeHybridFlyover;
             break;
         default:
             break;
@@ -168,12 +256,12 @@
 -(void)addMapView{
     MKMapView *map = [[MKMapView alloc] initWithFrame:CGRectMake(0, 64, self.view.bounds.size.width, self.view.bounds.size.height - 64)];
     [self.view addSubview:map];
-    self.map = map;
+    _map = map;
     
     // 在地图上显示定位
     // 1、请求授权(在Info.plist中添加NSLocationWhenInUseUsageDescription）
-    self.manager = [[CLLocationManager alloc] init];
-    [self.manager requestWhenInUseAuthorization];
+    _manager = [[CLLocationManager alloc] init];
+    [_manager requestWhenInUseAuthorization];
     
     // 2.设置地图的用户跟踪模式
     map.userTrackingMode = MKUserTrackingModeFollow;
@@ -184,23 +272,23 @@
     
     // 其他的新属性
     // 显示指南针
-    self.map.showsCompass = YES;
+    _map.showsCompass = YES;
     // 显示感兴趣的点，默认是显示的
-    self.map.showsPointsOfInterest = NO;
+    _map.showsPointsOfInterest = YES;
     // 显示标尺(单位：mi 英尺)
-    self.map.showsScale = YES;
+    _map.showsScale = YES;
     // 显示交通情况
-    self.map.showsTraffic = YES;
+    _map.showsTraffic = YES;
     // 显示定位大头针，默认是显示的
-    self.map.showsUserLocation = YES;
+    _map.showsUserLocation = YES;
     // 显示建筑物的3D模型，设置3D/沙盘/航拍模式(高德地图不支持)
-    self.map.showsBuildings = YES;
+    _map.showsBuildings = YES;
     
 }
 #pragma mark - MKMapViewDelegate
 // userLocation：定位大头针模型
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
-//    NSLog(@"%f",self.map.userLocation.location.coordinate.latitude);
+//    NSLog(@"%f",_map.userLocation.location.coordinate.latitude);
     // 4、通过反地理编码来获取人文信息    地理信息——>人文信息
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:userLocation.location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
@@ -211,8 +299,8 @@
         // 5、设置数据  （获取定位大头针的模型)
         // 通过反地理编码来获取人文信息    地理信息——>人文信息
         
-        self.map.userLocation.title = pm.locality;
-        self.map.userLocation.subtitle = [NSString stringWithFormat:@"%@%@",pm.subLocality,pm.name];
+        _map.userLocation.title = pm.locality;
+        _map.userLocation.subtitle = [NSString stringWithFormat:@"%@%@",pm.subLocality,pm.name];
 
     }];
 }
@@ -224,8 +312,9 @@
         // 返回空，则不会进行重用，会按照默认的样式进行展示
         return nil;
     }
-    XGAnnotationView *anV = [XGAnnotationView annotationWithMapView:self.map];
-        return anV;
+    XGAnnotationView *anV = [XGAnnotationView annotationWithMapView:_map];
+    
+    return anV;
 }
 #pragma mark - 当已经添加大头针视图后调用(还没有显示在地图上)该方法可以用来设置自定义动画
 // 参数1：地图   参数2：大头针视图对应的模型数组   返回重用的大头针视图
