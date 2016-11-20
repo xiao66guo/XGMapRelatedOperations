@@ -15,6 +15,7 @@
 @property (nonatomic, strong) CLLocationManager *manager;
 @property (nonatomic, weak) UISegmentedControl *segment;
 @property (nonatomic, weak) UIButton *backBtn;
+@property (nonatomic, weak) UIButton *aerialBtn;
 @end
 
 @implementation XGViewController
@@ -24,12 +25,31 @@
     // 添加地图
     [self addMapView];
     // 设置地图的模式
-    [self addMapViewMode];
+    [self addMapViewModel];
     // 设置返回按钮
     [self addBackBtn];
+    // 设置航拍模式
+    [self addAerialBtn];
     // 设置地图的缩放模式
     [self addMapScale];
     
+}
+#pragma mark - 添加航拍按钮
+-(void)addAerialBtn{
+    UIButton *aerialBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.backBtn.frame.origin.x, self.backBtn.frame.origin.y - 30, 50, 25)];
+    aerialBtn.backgroundColor = [UIColor greenColor];
+    [aerialBtn setTitle:@"航拍" forState:UIControlStateNormal];
+    [aerialBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.view addSubview:aerialBtn];
+    self.aerialBtn = aerialBtn;
+    [aerialBtn addTarget:self action:@selector(addAerialModel) forControlEvents:UIControlEventTouchUpInside];
+}
+
+#pragma mark - 设置地图的航拍模式
+-(void)addAerialModel{
+    // 设置航拍模式
+    self.map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
+    self.map.userTrackingMode = MKUserTrackingModeFollow;
 }
 
 #pragma mark - 添加大头针
@@ -46,7 +66,7 @@
     CLLocationCoordinate2D coor = [self.map convertPoint:point toCoordinateFromView:self.map];
     // 获取坐标
     annotation.coordinate = coor;
-    annotation.title =@"xiao66guo";
+    annotation.title = @"xiao66guo";
     annotation.subtitle = @"😋呵呵呵呵呵";
     
     // 添加大头针模型(遵守MKAnnotation协议对象)
@@ -56,7 +76,7 @@
 
 #pragma mark - 设置地图的放大和缩小
 -(void)addMapScale{
-    UIButton *zoomin = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, self.view.bounds.size.height- 70, 50, 25)];
+    UIButton *zoomin = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 60, self.aerialBtn.frame.origin.y, 50, 25)];
     zoomin.backgroundColor = [UIColor greenColor];
     [zoomin setTitle:@"放大" forState:UIControlStateNormal];
     [zoomin setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -86,7 +106,7 @@
 
 #pragma mark - 设置返回按钮
 -(void)addBackBtn{
-    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, self.view.bounds.size.height- 50, 50, 30)];
+    UIButton *backBtn = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height- 50, 50, 25)];
     backBtn.backgroundColor = [UIColor greenColor];
     [backBtn setTitle:@"返回" forState:UIControlStateNormal];
     [backBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
@@ -113,7 +133,7 @@
 }
 
 #pragma mark - 添加地图的模式
--(void)addMapViewMode{
+-(void)addMapViewModel{
     NSArray *array = @[@"标准",@"卫星",@"混合",@"地图卫星立交桥",@"混合立交桥"];
     UISegmentedControl *segment = [[UISegmentedControl alloc] initWithItems:array];
     segment.frame = CGRectMake(10, 100, 300, 20);
@@ -175,8 +195,7 @@
     self.map.showsUserLocation = YES;
     // 显示建筑物的3D模型，设置3D/沙盘/航拍模式(高德地图不支持)
     self.map.showsBuildings = YES;
-    // 设置航拍模式
-//    self.map.camera = [MKMapCamera cameraLookingAtCenterCoordinate:CLLocationCoordinate2DMake(39.9, 116.4) fromDistance:100 pitch:90 heading:0];
+    
 }
 #pragma mark - MKMapViewDelegate
 // userLocation：定位大头针模型

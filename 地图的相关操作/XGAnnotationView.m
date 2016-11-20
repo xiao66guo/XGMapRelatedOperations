@@ -10,7 +10,7 @@
 
 @implementation XGAnnotationView
 
-+(instancetype)annotationWithMapView:(MKMapView *)mapView{
++(instancetype)annotationWithMapView:(MKMapView *)mapView{ 
     // 实现重用
     static NSString *ID = @"annotation";
     XGAnnotationView *anV = (XGAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:ID];
