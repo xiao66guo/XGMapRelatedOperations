@@ -19,7 +19,7 @@
 @end
 @implementation XGViewController
 {
-    MKMapView                      *_map;
+    MKMapView                          *_map;
     CLLocationManager              *_manager;
     UISegmentedControl             *_segment;
     UITextField               *_addressField;
@@ -65,9 +65,10 @@
 #pragma mark - 添加语音按钮
 -(void)addVoiceBtn{
     UIButton *voiceBtn = [[UIButton alloc] init];
+    voiceBtn.backgroundColor = [UIColor redColor];
     [voiceBtn setImage:[UIImage imageNamed:@"chat_bottom_voice_nor"] forState:UIControlStateNormal];
     [voiceBtn setImage:[UIImage imageNamed:@"chat_bottom_voice_press"] forState:UIControlStateHighlighted];
-    voiceBtn.frame = CGRectMake(CGRectGetMaxX(_navBtn.frame)+5, _navBtn.frame.origin.y - 5, 34, 34);
+    voiceBtn.frame = CGRectMake(CGRectGetMaxX(_navBtn.frame)+5, _navBtn.frame.origin.y, 25, 25);
     [voiceBtn addTarget:self action:@selector(clickVoiceBtn) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:voiceBtn];
 }
@@ -231,11 +232,10 @@
 
 #pragma mark - 添加大头针
 // 大头针视图是有系统来添加的，但是大头针的数据是需要由开发者通过大头针模型来设置的
-//-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-//    // 添加大图针的模型
-//    // 创建自定义的大头针模型的对象
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    // 添加大图针的模型
+    // 创建自定义的大头针模型的对象
 //    XGAnnotation *annotation = [[XGAnnotation alloc] init];
-//    self.annotation = annotation;
 //    // 设置属性
 //    // 获取点击事件的坐标
 //    UITouch *touch = touches.anyObject;
@@ -249,8 +249,8 @@
 //    
 //    // 添加大头针模型(遵守MKAnnotation协议对象)
 //    [_map addAnnotation:annotation];
-//   
-//}
+    [self.view endEditing:YES];
+}
 
 #pragma mark - 设置地图的放大和缩小
 -(void)addMapScale{
@@ -391,8 +391,8 @@
         // 5、设置数据  （获取定位大头针的模型)
         // 通过反地理编码来获取人文信息    地理信息——>人文信息
         
-        _map.userLocation.title = pm.locality;
-        _map.userLocation.subtitle = [NSString stringWithFormat:@"%@%@",pm.subLocality,pm.name];
+        _map.userLocation.title = [NSString stringWithFormat:@"%@-%@-%@",pm.administrativeArea,pm.locality,pm.subLocality];
+        _map.userLocation.subtitle = pm.name;
 
     }];
 }
