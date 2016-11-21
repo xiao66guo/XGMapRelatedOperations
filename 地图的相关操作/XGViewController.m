@@ -27,7 +27,7 @@
     UIButton                     *_aerialBtn;
     UIButton                        *_navBtn;
     IFlyRecognizerView  *_iflyRecognizerView;
-    NSMutableArray              *_polyLineMutable;
+    NSMutableArray         *_polyLineMutable;
 }
 
 - (void)viewDidLoad {
@@ -94,7 +94,6 @@
     for (NSString *key in dic) {
         [resultString appendFormat:@"%@",key];
     }
-    
     _result =[NSString stringWithFormat:@"%@%@", _addressField.text,resultString];
     
     NSString * resultFromJson =  [ISRDataHelper stringFromJson:resultString];
@@ -109,16 +108,8 @@
 /*识别会话错误返回代理
  @ param  error 错误码
  */
-- (void)onError: (IFlySpeechError *) error
-{
-    
-//    NSLog(@"-------%@",error);
-}
-- (void) onVolumeChanged: (int)volume
-{
-//    NSLog(@"%d",volume);
-    
-}
+- (void)onError: (IFlySpeechError *) error{}
+- (void) onVolumeChanged: (int)volume{}
 
 
 #pragma mark - 添加绘制控件
