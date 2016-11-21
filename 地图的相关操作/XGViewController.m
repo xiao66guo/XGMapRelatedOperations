@@ -27,10 +27,13 @@
     UIButton                     *_aerialBtn;
     UIButton                        *_navBtn;
     IFlyRecognizerView  *_iflyRecognizerView;
+    NSMutableArray              *_polyLineMutable;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _polyLineMutable = [NSMutableArray array];
     // 添加地图
     [self addMapView];
     // 设置地图的模式
@@ -72,6 +75,8 @@
 -(void)clickVoiceBtn{
     if (_addressField.text.length != 0) {
         _addressField.text = nil;
+        [_map removeOverlays:_polyLineMutable];
+        [_polyLineMutable removeAllObjects];
     }
     //启动识别服务
     [_iflyRecognizerView start];
@@ -153,6 +158,11 @@
 
 #pragma mark - 开始导航按钮
 -(void)startNav{
+    
+    if (nil != _polyLineMutable) {
+        [_map removeOverlays:_polyLineMutable];
+        [_polyLineMutable removeAllObjects];
+    }
     [_addressField resignFirstResponder];
     
     // 使用自定义地图进行导航  将起点和终点发送给服务器,由服务器返回导航结果
@@ -186,6 +196,9 @@
                 // 地图画线  折线属于地图覆盖物的一种
                 // 添加地图覆盖物  所以遵守MKOverlay协议的对象都可以作为覆盖物添加到地图上
                 [_map addOverlay:route.polyline];
+                
+                [_polyLineMutable addObject:route.polyline];
+                
             }
             
         }];
@@ -345,6 +358,7 @@
     [self.view addSubview:map];
     _map = map;
     
+
     // 在地图上显示定位
     // 1、请求授权(在Info.plist中添加NSLocationWhenInUseUsageDescription）
     _manager = [[CLLocationManager alloc] init];
