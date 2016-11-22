@@ -51,7 +51,6 @@
     _iflyRecognizerView = [[IFlyRecognizerView alloc] initWithCenter:self.view.center];
     _iflyRecognizerView.delegate = self;
     [_iflyRecognizerView setParameter: @"iat" forKey: [IFlySpeechConstant IFLY_DOMAIN]];
-    //asr_audio_path保存录音文件名，如不再需要，设置value为nil表示取消，默认目录是documents
     [_iflyRecognizerView setParameter:@"asrview.pcm " forKey:[IFlySpeechConstant ASR_AUDIO_PATH]];
     // 添加语音按钮
     [self addVoiceBtn];
@@ -98,12 +97,9 @@
     _result =[NSString stringWithFormat:@"%@%@", _addressField.text,resultString];
     
     NSString * resultFromJson =  [ISRDataHelper stringFromJson:resultString];
-//    NSLog(@"%@",resultFromJson);
-    
     _addressField.text = [NSString stringWithFormat:@"%@%@", _addressField.text,resultFromJson];
     
     if (isLast){
-//        NSLog(@"听写结果(json)：%@测试",  self.result);
     }
 }
 /*识别会话错误返回代理
@@ -162,8 +158,6 @@
     MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
     // 2、设置起点和终点
     request.source = [MKMapItem mapItemForCurrentLocation];
-    // //终点  通过地理编码(人文->地理)获取地标对象,然后生成地图项目
-    //进行地理编码
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder geocodeAddressString:_addressField.text completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         
@@ -177,16 +171,7 @@
         MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
         //4.计算导航路线 传递数据给服务器
         [direction calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
-            //取出结果中的路线对象
             for (MKRoute *route in response.routes) {
-                //MKRoute 路线对象
-                //                //取出路线中每一步操作
-//                for (MKRouteStep *step in route.steps) {
-                    //取出每一步的具体内容
-//                    NSLog(@"%@", step.instructions);
-//                }
-                // 地图画线  折线属于地图覆盖物的一种
-                // 添加地图覆盖物  所以遵守MKOverlay协议的对象都可以作为覆盖物添加到地图上
                 [_map addOverlay:route.polyline];
                 
                 [_polyLineMutable addObject:route.polyline];
@@ -199,12 +184,8 @@
     
 }
 #pragma mark - MKMapViewDelegate
-// 当设置地图覆盖物的样式时调用   参数1：地图视图    参数2：添加到的覆盖物    返回覆盖物的样式
 -(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
-    // 创建覆盖物的样式
-    // 设置折线的样式，必须使用MKOverlayRenderer的折线子类
     MKPolylineRenderer *render = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
-    // 设置属性
     render.lineWidth = 3;
     render.strokeColor = [UIColor purpleColor];
     
@@ -233,21 +214,13 @@
 #pragma mark - 添加大头针
 // 大头针视图是有系统来添加的，但是大头针的数据是需要由开发者通过大头针模型来设置的
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    // 添加大图针的模型
-    // 创建自定义的大头针模型的对象
     XGAnnotation *annotation = [[XGAnnotation alloc] init];
-    // 设置属性
-    // 获取点击事件的坐标
     UITouch *touch = touches.anyObject;
     CGPoint point = [touch locationInView:_map];
-    // 进行坐标转换
     CLLocationCoordinate2D coor = [_map convertPoint:point toCoordinateFromView:_map];
-    // 获取坐标
     annotation.coordinate = coor;
     annotation.title = @"xiao66guo";
     annotation.subtitle = @"😋呵呵呵呵呵";
-    
-    // 添加大头针模型(遵守MKAnnotation协议对象)
     [_map addAnnotation:annotation];
     [self.view endEditing:YES];
 }
@@ -294,16 +267,6 @@
 }
 #pragma mark - 返回按钮的响应事件
 -(void)clickBackBtn{
-    // 没有动画的返回方式
-//    _map.userTrackingMode = MKUserTrackingModeFollow;
-    // 有动画的返回用户的跟踪方式1：
-//    [_map setUserTrackingMode:MKUserTrackingModeFollow animated:YES];
-    // 通过地图范围返回用户的跟踪方式2：中心点 = 定位点
-  /*  typedef struct {
-        CLLocationCoordinate2D center;  // 中心点   表示地图的位置
-        MKCoordinateSpan span;          // 经纬度的跨度  1° = 111KM   表示地图的尺寸
-         } MKCoordinateRegion;*/  // 地图范围
-    // 设置定位点
     CLLocationCoordinate2D coordinate = _map.userLocation.location.coordinate;
     // 设置跨度 = 当前地图的跨度
     MKCoordinateSpan spn = _map.region.span;
@@ -357,9 +320,6 @@
     
     // 2.设置地图的用户跟踪模式
     map.userTrackingMode = MKUserTrackingModeFollow;
-    // 3、设置代理 通过代理来监听地图已经更新用户位置后获取地理信息
-    // 不在界面上显示的大头针视图，如果过多的话会导致内存紧张，系统基于此也实现了大头针视图的重用机制
-    // 设置代理来实现大头针的重用
     map.delegate = self;
     
     // 其他的新属性
@@ -378,51 +338,38 @@
     
 }
 #pragma mark - MKMapViewDelegate
-// userLocation：定位大头针模型
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation{
-//    NSLog(@"%f",_map.userLocation.location.coordinate.latitude);
-    // 4、通过反地理编码来获取人文信息    地理信息——>人文信息
     CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder reverseGeocodeLocation:userLocation.location completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
         if (placemarks.count == 0 || error) {
             return ;
         }
         CLPlacemark *pm = placemarks.lastObject;
-        // 5、设置数据  （获取定位大头针的模型)
-        // 通过反地理编码来获取人文信息    地理信息——>人文信息
-        
         _map.userLocation.title = [NSString stringWithFormat:@"%@-%@-%@",pm.administrativeArea,pm.locality,pm.subLocality];
         _map.userLocation.subtitle = pm.name;
 
     }];
 }
 #pragma mark - 大头针的重用
-// 返回可重用的大头针视图 参数1：地图    参数2：大头针视图对应的模型
 -(MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation{
     // 排除已经定位的大头针
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
-        // 返回空，则不会进行重用，会按照默认的样式进行展示
         return nil;
     }
-    XGAnnotationView *anV = [XGAnnotationView annotationWithMapView:_map];
+    XGAnnotationView *anV = [XGAnnotationView xg_annotationWithMapView:_map];
     
     return anV;
 }
 #pragma mark - 当已经添加大头针视图后调用(还没有显示在地图上)该方法可以用来设置自定义动画
-// 参数1：地图   参数2：大头针视图对应的模型数组   返回重用的大头针视图
 -(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray<MKAnnotationView *> *)views{
-    
-    // 遍历所有的大头针视图
     for (MKAnnotationView *anv in views) {
         // 排除定位的大头针
         if ([anv.annotation isKindOfClass:[MKUserLocation class]]) {
             return;
         }
-        // 记录目标的位置
         CGRect targetRect = anv.frame;
         // 修改位置
         anv.frame = CGRectMake(targetRect.origin.x, 0, targetRect.size.width, targetRect.size.height);
-        // 以动画的形式将大头针视图改回原来的目标位置
         [UIView animateWithDuration:0.3 animations:^{
             anv.frame = targetRect;
         }];

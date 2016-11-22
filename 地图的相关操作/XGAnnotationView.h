@@ -9,5 +9,5 @@
 #import <MapKit/MapKit.h>
 
 @interface XGAnnotationView : MKAnnotationView
-+(instancetype)annotationWithMapView:(MKMapView *)mapView;
++(instancetype)xg_annotationWithMapView:(MKMapView *)mapView;
 @end
