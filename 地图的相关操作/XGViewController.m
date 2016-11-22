@@ -235,20 +235,20 @@
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
     // 添加大图针的模型
     // 创建自定义的大头针模型的对象
-//    XGAnnotation *annotation = [[XGAnnotation alloc] init];
-//    // 设置属性
-//    // 获取点击事件的坐标
-//    UITouch *touch = touches.anyObject;
-//    CGPoint point = [touch locationInView:_map];
-//    // 进行坐标转换
-//    CLLocationCoordinate2D coor = [_map convertPoint:point toCoordinateFromView:_map];
-//    // 获取坐标
-//    annotation.coordinate = coor;
-//    annotation.title = @"xiao66guo";
-//    annotation.subtitle = @"😋呵呵呵呵呵";
-//    
-//    // 添加大头针模型(遵守MKAnnotation协议对象)
-//    [_map addAnnotation:annotation];
+    XGAnnotation *annotation = [[XGAnnotation alloc] init];
+    // 设置属性
+    // 获取点击事件的坐标
+    UITouch *touch = touches.anyObject;
+    CGPoint point = [touch locationInView:_map];
+    // 进行坐标转换
+    CLLocationCoordinate2D coor = [_map convertPoint:point toCoordinateFromView:_map];
+    // 获取坐标
+    annotation.coordinate = coor;
+    annotation.title = @"xiao66guo";
+    annotation.subtitle = @"😋呵呵呵呵呵";
+    
+    // 添加大头针模型(遵守MKAnnotation协议对象)
+    [_map addAnnotation:annotation];
     [self.view endEditing:YES];
 }
 
