@@ -22,7 +22,6 @@
      当再次点击“导航”或者“语音输入”按钮时会对以前的路线进行清除；
 
 实现导航路线绘制代码：
-`
 -(void)startNav{
 
     if (nil != _polyLineMutable) {
@@ -51,5 +50,5 @@
                 [_polyLineMutable addObject:route.polyline];
             }
         }];
-    }];}
-    `
+    }];
+    }
