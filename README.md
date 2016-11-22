@@ -20,3 +20,36 @@
 
 8️⃣通过点击“导航”按钮来实现用户的定位和输入的位置之间的路线绘制功能；
      当再次点击“导航”或者“语音输入”按钮时会对以前的路线进行清除；
+
+实现导航路线绘制代码：
+`
+-(void)startNav{
+
+    if (nil != _polyLineMutable) {
+        [_map removeOverlays:_polyLineMutable];
+        [_polyLineMutable removeAllObjects];
+    }
+    [_addressField resignFirstResponder];
+    MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
+    request.source = [MKMapItem mapItemForCurrentLocation];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    [geocoder geocodeAddressString:_addressField.text completionHandler:^(NSArray<clplacemark *=""> * _Nullable placemarks, NSError * _Nullable error) {
+         
+        if (placemarks.count == 0 || error) {
+            return ;
+        }
+        CLPlacemark *clPm = placemarks.lastObject;
+        MKPlacemark *pm = [[MKPlacemark alloc] initWithPlacemark:clPm];
+        request.destination = [[MKMapItem alloc] initWithPlacemark:pm];
+        MKDirections *direction = [[MKDirections alloc] initWithRequest:request];
+        [direction calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
+            for (MKRoute *route in response.routes) {
+                for (MKRouteStep *step in route.steps) {
+                    NSLog(@"%@", step.instructions);
+                }
+                [_map addOverlay:route.polyline];
+                [_polyLineMutable addObject:route.polyline];
+            }
+        }];
+    }];}
+    `
