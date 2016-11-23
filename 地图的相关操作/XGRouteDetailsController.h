@@ -10,4 +10,5 @@
 
 @interface XGRouteDetailsController : UIViewController
 
+@property (nonatomic, strong) NSMutableArray *details;
 @end

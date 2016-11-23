@@ -14,6 +14,7 @@
 #import "iflyMSC/IFlyRecognizerView.h"
 #import "iflyMSC/IFlyMSC.h"
 #import "ISRDataHelper.h"
+#import "XGRouteDetailsController.h"
 @interface XGViewController ()<MKMapViewDelegate,IFlyRecognizerViewDelegate,UITextFieldDelegate>
 @property (nonatomic, strong) NSString *result;
 @end
@@ -72,12 +73,17 @@
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithCustomView:btn];
     self.navigationItem.rightBarButtonItem = right;
 }
+-(void)clickRouteDetails{
+    XGRouteDetailsController *routeVC = [[XGRouteDetailsController alloc] init];
+    routeVC.title = @"路线详情查看";
+    routeVC.details = [_routeDetails copy];
+    [self.navigationController pushViewController:routeVC animated:YES];
+}
 
 -(void)viewWillAppear:(BOOL)animated{
     NSString *initString = [[NSString alloc] initWithFormat:@"appid=%@",@"58315ff7"];
     [IFlySpeechUtility createUtility:initString];
 }
-
 #pragma mark - 添加语音按钮
 -(void)addVoiceBtn{
     UIButton *voiceBtn = [[UIButton alloc] init];
@@ -191,18 +197,17 @@
             for (MKRoute *route in response.routes) {
                 
                 for (MKRouteStep *step in route.steps) {
-                    [_routeDetails addObject:step.instructions];
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjects:@[step.instructions,@(step.distance)] forKeys:@[@"details",@"distance"]];
+                    [_routeDetails addObject:dict];
+//                    NSLog(@"%@",step.instructions);
+//                    NSLog(@"%.1fKM",step.distance/1000);
+                    NSLog(@"%@",dict);
                 }
                 [_map addOverlay:route.polyline];
                 [_polyLineMutable addObject:route.polyline];
-                
             }
-            NSLog(@"%@",_routeDetails.description);
-            
         }];
-        
     }];
-    
 }
 #pragma mark - MKMapViewDelegate
 -(MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay{
