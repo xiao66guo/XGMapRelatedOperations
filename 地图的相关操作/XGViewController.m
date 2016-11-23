@@ -199,9 +199,6 @@
                 for (MKRouteStep *step in route.steps) {
                     NSDictionary *dict = [NSDictionary dictionaryWithObjects:@[step.instructions,@(step.distance)] forKeys:@[@"details",@"distance"]];
                     [_routeDetails addObject:dict];
-//                    NSLog(@"%@",step.instructions);
-//                    NSLog(@"%.1fKM",step.distance/1000);
-                    NSLog(@"%@",dict);
                 }
                 [_map addOverlay:route.polyline];
                 [_polyLineMutable addObject:route.polyline];

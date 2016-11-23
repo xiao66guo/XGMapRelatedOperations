@@ -7,7 +7,7 @@
 //
 
 #import "XGRouteDetailsController.h"
-
+#import "XGRouteDetailsCell.h"
 @interface XGRouteDetailsController ()<UITableViewDataSource>
 
 @end
@@ -19,6 +19,8 @@
     self.view.backgroundColor = [UIColor magentaColor];
 
     UITableView *table = [[UITableView alloc] initWithFrame:self.view.bounds];
+    table.rowHeight = 120;
+    table.separatorStyle = UITableViewCellSeparatorStyleNone;
     table.dataSource = self;
     [self.view addSubview:table];
 }
@@ -27,13 +29,12 @@
     return _details.count;
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    static NSString *ID = @"routeDetails";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ID];
-    if (nil == cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
-    }
-    cell.textLabel.text = [NSString stringWithFormat:@"%@",_details[indexPath.row]];
     
+    XGRouteDetailsCell *cell = [XGRouteDetailsCell routeDetailsCellWithTableView:tableView];
+    NSDictionary *dict = _details[indexPath.row];
+    CGFloat dis = [dict[@"distance"] doubleValue];
+    cell.distanceLab.text = [NSString stringWithFormat:@"%.1lf\nKM",dis/1000];
+    cell.detailLab.text = dict[@"details"];
     return cell;
 }
 @end

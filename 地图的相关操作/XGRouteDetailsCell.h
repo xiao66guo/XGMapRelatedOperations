@@ -9,5 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface XGRouteDetailsCell : UITableViewCell
+
+@property (nonatomic, weak) UILabel *distanceLab;
+@property (nonatomic, weak) UILabel *upLab;
+@property (nonatomic, weak) UILabel *downLab;
+@property (nonatomic, weak) UILabel *detailLab;
+
 +(instancetype)routeDetailsCellWithTableView:(UITableView *)tableView;
 @end

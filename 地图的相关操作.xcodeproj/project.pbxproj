@@ -378,7 +378,7 @@
 				);
 				GCC_PREFIX_HEADER = "地图的相关操作/PrefixHeader.pch";
 				INFOPLIST_FILE = "地图的相关操作/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaoguo.111;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -398,7 +398,7 @@
 				);
 				GCC_PREFIX_HEADER = "地图的相关操作/PrefixHeader.pch";
 				INFOPLIST_FILE = "地图的相关操作/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaoguo.111;
 				PRODUCT_NAME = "$(TARGET_NAME)";
