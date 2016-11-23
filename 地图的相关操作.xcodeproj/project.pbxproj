@@ -46,6 +46,7 @@
 		DB70CD101DE565B2006F59F5 /* XGRouteDetailsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGRouteDetailsCell.m; sourceTree = "<group>"; };
 		DB70CD131DE56852006F59F5 /* NSString+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Extension.h"; sourceTree = "<group>"; };
 		DB70CD141DE56852006F59F5 /* NSString+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Extension.m"; sourceTree = "<group>"; };
+		DB70CD161DE568F0006F59F5 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		DB8C25C91DE064E600AAC0D2 /* 地图的相关操作.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "地图的相关操作.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB8C25CD1DE064E600AAC0D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DB8C25CF1DE064E600AAC0D2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -166,6 +167,7 @@
 				DBB10A9B1DE1DC5C0081F508 /* AddressBook.framework */,
 				DB8C25E61DE0685100AAC0D2 /* MapKit.framework */,
 				DB8C25CD1DE064E600AAC0D2 /* main.m */,
+				DB70CD161DE568F0006F59F5 /* PrefixHeader.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -374,6 +376,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/地图的相关操作",
 				);
+				GCC_PREFIX_HEADER = "地图的相关操作/PrefixHeader.pch";
 				INFOPLIST_FILE = "地图的相关操作/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -393,6 +396,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/地图的相关操作",
 				);
+				GCC_PREFIX_HEADER = "地图的相关操作/PrefixHeader.pch";
 				INFOPLIST_FILE = "地图的相关操作/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
