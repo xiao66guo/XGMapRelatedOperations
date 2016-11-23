@@ -28,12 +28,14 @@
     UIButton                        *_navBtn;
     IFlyRecognizerView  *_iflyRecognizerView;
     NSMutableArray         *_polyLineMutable;
+    NSMutableArray            *_routeDetails;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     _polyLineMutable = [NSMutableArray array];
+    _routeDetails = [NSMutableArray array];
     // 添加地图
     [self addMapView];
     // 设置地图的模式
@@ -54,8 +56,23 @@
     [_iflyRecognizerView setParameter:@"asrview.pcm " forKey:[IFlySpeechConstant ASR_AUDIO_PATH]];
     // 添加语音按钮
     [self addVoiceBtn];
+    // 添加路线查看
+    [self addRouteDetails];
+    
     
 }
+#pragma mark - 路线查看
+-(void)addRouteDetails{
+    
+    UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80, 32)];
+    [btn setTitle:@"路线查看" forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [btn setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+    [btn addTarget:self action:@selector(clickRouteDetails) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithCustomView:btn];
+    self.navigationItem.rightBarButtonItem = right;
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     NSString *initString = [[NSString alloc] initWithFormat:@"appid=%@",@"58315ff7"];
     [IFlySpeechUtility createUtility:initString];
@@ -172,11 +189,15 @@
         //4.计算导航路线 传递数据给服务器
         [direction calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse * _Nullable response, NSError * _Nullable error) {
             for (MKRoute *route in response.routes) {
-                [_map addOverlay:route.polyline];
                 
+                for (MKRouteStep *step in route.steps) {
+                    [_routeDetails addObject:step.instructions];
+                }
+                [_map addOverlay:route.polyline];
                 [_polyLineMutable addObject:route.polyline];
                 
             }
+            NSLog(@"%@",_routeDetails.description);
             
         }];
         

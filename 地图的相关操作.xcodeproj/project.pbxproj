@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DB0D208F1DE0AA860078AACA /* XGAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0D208E1DE0AA860078AACA /* XGAnnotation.m */; };
 		DB0D20981DE0C0BB0078AACA /* XGAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0D20971DE0C0BB0078AACA /* XGAnnotationView.m */; };
+		DB70CD0C1DE54258006F59F5 /* XGRouteDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB70CD0B1DE54258006F59F5 /* XGRouteDetailsController.m */; };
 		DB8C25CE1DE064E600AAC0D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25CD1DE064E600AAC0D2 /* main.m */; };
 		DB8C25D11DE064E600AAC0D2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB8C25D01DE064E600AAC0D2 /* AppDelegate.m */; };
 		DB8C25D91DE064E600AAC0D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DB8C25D81DE064E600AAC0D2 /* Assets.xcassets */; };
@@ -37,6 +38,8 @@
 		DB0D208E1DE0AA860078AACA /* XGAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGAnnotation.m; sourceTree = "<group>"; };
 		DB0D20961DE0C0BB0078AACA /* XGAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XGAnnotationView.h; sourceTree = "<group>"; };
 		DB0D20971DE0C0BB0078AACA /* XGAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGAnnotationView.m; sourceTree = "<group>"; };
+		DB70CD0A1DE54258006F59F5 /* XGRouteDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XGRouteDetailsController.h; sourceTree = "<group>"; };
+		DB70CD0B1DE54258006F59F5 /* XGRouteDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XGRouteDetailsController.m; sourceTree = "<group>"; };
 		DB8C25C91DE064E600AAC0D2 /* 地图的相关操作.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "地图的相关操作.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB8C25CD1DE064E600AAC0D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DB8C25CF1DE064E600AAC0D2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -114,6 +117,8 @@
 				DB8C25D01DE064E600AAC0D2 /* AppDelegate.m */,
 				DB8C25E31DE0659A00AAC0D2 /* XGViewController.h */,
 				DB8C25E41DE0659A00AAC0D2 /* XGViewController.m */,
+				DB70CD0A1DE54258006F59F5 /* XGRouteDetailsController.h */,
+				DB70CD0B1DE54258006F59F5 /* XGRouteDetailsController.m */,
 				DB0D208D1DE0AA860078AACA /* XGAnnotation.h */,
 				DB0D208E1DE0AA860078AACA /* XGAnnotation.m */,
 				DB0D20961DE0C0BB0078AACA /* XGAnnotationView.h */,
@@ -236,6 +241,7 @@
 				DBB10A951DE1DC150081F508 /* NSDictionary+Log.m in Sources */,
 				DB0D20981DE0C0BB0078AACA /* XGAnnotationView.m in Sources */,
 				DB8C25CE1DE064E600AAC0D2 /* main.m in Sources */,
+				DB70CD0C1DE54258006F59F5 /* XGRouteDetailsController.m in Sources */,
 				DB8C25E51DE0659B00AAC0D2 /* XGViewController.m in Sources */,
 				DB0D208F1DE0AA860078AACA /* XGAnnotation.m in Sources */,
 			);
