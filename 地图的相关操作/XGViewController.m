@@ -237,14 +237,14 @@
 #pragma mark - 添加大头针
 // 大头针视图是有系统来添加的，但是大头针的数据是需要由开发者通过大头针模型来设置的
 -(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    XGAnnotation *annotation = [[XGAnnotation alloc] init];
-    UITouch *touch = touches.anyObject;
-    CGPoint point = [touch locationInView:_map];
-    CLLocationCoordinate2D coor = [_map convertPoint:point toCoordinateFromView:_map];
-    annotation.coordinate = coor;
-    annotation.title = @"xiao66guo";
-    annotation.subtitle = @"😋呵呵呵呵呵";
-    [_map addAnnotation:annotation];
+//    XGAnnotation *annotation = [[XGAnnotation alloc] init];
+//    UITouch *touch = touches.anyObject;
+//    CGPoint point = [touch locationInView:_map];
+//    CLLocationCoordinate2D coor = [_map convertPoint:point toCoordinateFromView:_map];
+//    annotation.coordinate = coor;
+//    annotation.title = @"xiao66guo";
+//    annotation.subtitle = @"😋呵呵呵呵呵";
+//    [_map addAnnotation:annotation];
     [self.view endEditing:YES];
 }
 
