@@ -30,6 +30,8 @@
     IFlyRecognizerView  *_iflyRecognizerView;
     NSMutableArray         *_polyLineMutable;
     NSMutableArray            *_routeDetails;
+    UIButton                       *_zoomout;
+    UIButton                        *_zoomin;
 }
 
 - (void)viewDidLoad {
@@ -215,7 +217,6 @@
     return render;
 }
 
-
 #pragma mark - 添加航拍按钮
 -(void)addAerialBtn{
     UIButton *aerialBtn = [[UIButton alloc] initWithFrame:CGRectMake(_backBtn.frame.origin.x, _backBtn.frame.origin.y - 30, 50, 25)];
@@ -256,6 +257,7 @@
     [zoomin setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.view addSubview:zoomin];
     [zoomin addTarget:self action:@selector(clickZoom:) forControlEvents:UIControlEventTouchUpInside];
+    _zoomin = zoomin;
     
     UIButton *zoomout = [[UIButton alloc] initWithFrame:CGRectMake(zoomin.frame.origin.x, zoomin.frame.origin.y + 30, 50, 25)];
     zoomout.backgroundColor = [UIColor greenColor];
@@ -263,6 +265,7 @@
     [zoomout setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.view addSubview:zoomout];
     [zoomout addTarget:self action:@selector(clickZoom:) forControlEvents:UIControlEventTouchUpInside];
+    _zoomout = zoomout;
     
 }
 #pragma mark - 地图的缩放
@@ -270,9 +273,15 @@
     CLLocationCoordinate2D coordinate = _map.region.center;
     MKCoordinateSpan spn;
     if ([sender.titleLabel.text isEqualToString:@"放大"]) {
+        _zoomout.hidden = NO;
         spn = MKCoordinateSpanMake(_map.region.span.latitudeDelta * 0.5, _map.region.span.longitudeDelta * 0.5);
+        
     }else{
-        spn = MKCoordinateSpanMake(_map.region.span.latitudeDelta * 2, _map.region.span.longitudeDelta * 2);
+        spn = MKCoordinateSpanMake(_map.region.span.latitudeDelta * 2, _map.region.span.longitudeDelta * 02);
+        if (spn.latitudeDelta >= 114 && spn.longitudeDelta >= 102) {
+            _zoomout.hidden = YES;
+            return;
+        }
     }
     [_map setRegion:MKCoordinateRegionMake(coordinate, spn) animated:YES];
 
@@ -358,6 +367,7 @@
     _map.showsUserLocation = YES;
     // 显示建筑物的3D模型，设置3D/沙盘/航拍模式(高德地图不支持)
     _map.showsBuildings = YES;
+    
     
 }
 #pragma mark - MKMapViewDelegate
